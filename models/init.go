@@ -1,15 +1,22 @@
 package models
 
 import (
-	"github.com/aiyijing/smart-gateway/config"
-	"github.com/sdomino/scribble"
+	"github.com/aiyijing/smart-gateway/database"
+	"gorm.io/gorm"
+	"time"
 )
 
-var DB *scribble.Driver
+type Model struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
+}
 
 func init() {
-	var err error
-	DB, err = scribble.New(config.RunConf.Data, nil)
+	err := database.GetInstance().AutoMigrate(
+		&Node{},
+	)
 	if err != nil {
 		panic(err)
 	}

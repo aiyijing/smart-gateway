@@ -1,4 +1,4 @@
-./vendor
+vendor
 .idea
 .DS_Store
 /client/node_modules
@@ -16,7 +16,6 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Editor directories and files
-.idea
 .vscode
 *.suo
 *.ntvs*
