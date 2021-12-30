@@ -2,16 +2,14 @@ package api
 
 import (
 	"github.com/aiyijing/smart-gateway/app/httputil"
+	"github.com/aiyijing/smart-gateway/database"
 	"github.com/aiyijing/smart-gateway/models"
 	"github.com/gin-gonic/gin"
 )
 
 func ListNode(g *gin.Context) {
-	nodes, err := models.GetAllNode()
-	if err != nil {
-		httputil.MsgErr(g, err)
-		return
-	}
+	var nodes []models.Node
+	database.GetInstance().Find(&nodes)
 	httputil.MsgWithData(g, nodes)
 }
 
@@ -22,8 +20,8 @@ func AddNode(g *gin.Context) {
 		httputil.MsgErr(g, err)
 		return
 	}
-	err = models.AddNode(node)
-	if err != nil {
+	rs := database.GetInstance().Create(&node)
+	if rs.Error != nil {
 		httputil.MsgErr(g, err)
 		return
 	}
@@ -37,18 +35,17 @@ func UpdateNode(g *gin.Context) {
 		httputil.MsgErr(g, err)
 		return
 	}
-
-	err = models.UpdateNode(node)
-	if err != nil {
+	rs := database.GetInstance().Updates(&node)
+	if rs.Error != nil {
 		httputil.MsgErr(g, err)
 		return
 	}
-
 	httputil.MsgWithData(g, node)
 }
 
 func DeleteNode(g *gin.Context) {
+	var node models.Node
 	name := g.Param("name")
-	err := models.DeleteNode(name)
-	httputil.Msg(g, err)
+	database.GetInstance().Delete(&node).Where("name = ?", name)
+	httputil.MsgWithData(g, node)
 }

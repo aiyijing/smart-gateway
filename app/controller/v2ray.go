@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/aiyijing/smart-gateway/database"
 
 	"github.com/aiyijing/smart-gateway/app/httputil"
 	"github.com/aiyijing/smart-gateway/internal/service"
@@ -62,16 +63,12 @@ func (v *V2rayController) GetV2rayRawConfig(g *gin.Context) {
 }
 
 func (v *V2rayController) restart() error {
-	nodes, err := models.GetAllNode()
-	if err != nil {
-		return err
-	}
 	var availableNode models.Node
-	for _, n := range nodes {
-		if n.Enable ==true{
-			availableNode = n
-		}
+	rs := database.GetInstance().Find(&availableNode).Where("enable=", "true")
+	if rs.Error != nil {
+		return rs.Error
 	}
+
 	outbound, err := json.MarshalIndent(availableNode.OutBound, "", "  ")
 	if err != nil {
 		return fmt.Errorf("unable marshal outbound: %s", availableNode.Name)
