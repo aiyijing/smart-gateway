@@ -3,13 +3,11 @@
 SmartGateway is smart gateway.It uses iptables to forward traffic. The traffic outbounds is tproxy of v2ray.
 SmartGateway run in docker, So it is very easy to install and uninstall.
 
-## Motivation
-
->
 
 ## Dependency
 
-* docker
+* Docker
+* Linux
 
 ## QuickStart
 
